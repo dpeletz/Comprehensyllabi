@@ -1,5 +1,7 @@
 # Comprehensyllabi
 
+<img src="https://github.com/dpeletz/Comprehensyllabi/assets/logo.png?raw=true" width="200" />
+
 ## Introduction
 *comprehensyllabi* is a Python program that enables students to have a better understanding of their workload by extracting the important information from their classes’ syllabi. 
 
