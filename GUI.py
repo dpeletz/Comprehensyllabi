@@ -16,8 +16,8 @@ import pdf_extraction
 # -------------------------------------------------------------------------------------------------
 # Global Variables:
 
-rootWin = None
-parsedText = None
+root_win = None
+parsed_text = None
 
 # -------------------------------------------------------------------------------------------------
 # GUI Main Function Definition:
@@ -26,82 +26,85 @@ def GUIMain():
     """Main function for the program. Creates a Graphical User Interface and assigns commands to specific
     elements of it. Has no parameters and returns nothing."""
 
-    global rootWin
-    global parsedText
+    global root_win
+    global parsed_text
 
-    rootWin = Tk()
-    rootWin.title("Syllabus Information Parser")
-    rootWin.configure(bg="#CDC9C9")
+    root_win = Tk()
+    root_win.title("Syllabus Information Parser")
+    root_win.configure(bg="#CDC9C9")
 
-    parsedText = StringVar()
+    parsed_text = StringVar()
 
-    titleLabel = Label(rootWin, text="Syllabus Simplifier", bg="#CDC9C9", fg="gray1", padx=40, pady=5,
-                    font="Verdana 18 bold")
+    titleLabel = Label(root_win, text="Syllabus Simplifier", bg="#CDC9C9", fg="gray1", padx=40, pady=5,
+                       font="Verdana 18 bold")
     titleLabel.grid(row=0, column=0)
 
-    label1 = Label(rootWin, text="Import your Syllabus:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
-                    font="Verdana 12 bold italic")
+    label1 = Label(root_win, text="Import your Syllabus:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
+                   font="Verdana 12 bold italic")
     label1.grid(row=1, column=0)
 
-    label2 = Label(rootWin, text="Parse your Syllabus:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
-                    font="Verdana 12 bold italic")
+    label2 = Label(root_win, text="Parse your Syllabus:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
+                   font="Verdana 12 bold italic")
     label2.grid(row=3, column=0)
 
-    label3 = Label(rootWin, text="Parsed Text:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
-                    font="Verdana 12 bold italic")
+    label3 = Label(root_win, text="Parsed Text:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
+                   font="Verdana 12 bold italic")
     label3.grid(row=5, column=0)
 
-    importButton = Button(rootWin, text="Import", width=7, bg="#F5F5F5", fg="black", activeforeground="#2F4F4F", bd=3,
-                    font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=importFile)
-    importButton.grid(row=2, column=0)
+    import_button = Button(root_win, text="Import", width=7, bg="#F5F5F5", fg="black", activeforeground="#2F4F4F", bd=3,
+                          font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=import_file)
+    import_button.grid(row=2, column=0)
 
-    parseButton = Button(rootWin, text="Parse", width=7, bg="#F5F5F5", fg="black", activeforeground="#2F4F4F", bd=3,
-                    font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=parseSyllabus)
-    parseButton.grid(row=4, column=0)
+    parse_button = Button(root_win, text="Parse", width=7, bg="#F5F5F5", fg="black", activeforeground="#2F4F4F", bd=3,
+                         font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=parse_syllabus)
+    parse_button.grid(row=4, column=0)
 
-    quitButton = Button(rootWin, text="Quit", width=7, bg="#F5F5F5", fg="#CD0000", activeforeground="#FF0000", bd=3,
-                    font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=quit)
-    quitButton.grid(row=8, column=0)
+    quit_button = Button(root_win, text="Quit", width=7, bg="#F5F5F5", fg="#CD0000", activeforeground="#FF0000", bd=3,
+                        font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=quit)
+    quit_button.grid(row=8, column=0)
 
-    txtEntry = Entry(rootWin, textvariable=parsedText, bg="#efefef", fg="black", bd=5, font="Verdana 12",
+    txt_entry = Entry(root_win, textvariable=parsed_text, bg="#efefef", fg="black", bd=5, font="Verdana 12",
                      justify=CENTER, relief=SUNKEN, width=20)
-    txtEntry.grid(row=6, column=0)
+    txt_entry.grid(row=6, column=0)
 
-    label4 = Label(rootWin, text="", bg="#CDC9C9", fg="gray1", padx=5, pady=0,
-                    font="Verdana 12 bold italic")
+    label4 = Label(root_win, text="", bg="#CDC9C9", fg="gray1", padx=5, pady=0,
+                   font="Verdana 12 bold italic")
     label4.grid(row=7, column=0)
 
-    rootWin.mainloop()
+    root_win.mainloop()
 
 # -------------------------------------------------------------------------------------------------
 # Primary Function Definitions:
 
-def importF():
-    """Imports a .pdf file from the user's device."""
-    filePath = easygui.fileopenbox(filetypes=['*.pdf'])
-    return filePath
+def import_f():
+    """Imports a .pdf file from the user's device. Helper function for the GUI function. Takes no inputs
+    and returns a file path in string format."""
+    file_path = easygui.fileopenbox(filetypes=['*.pdf'])
+    return file_path
 
-def parseS():
-    """Parses the syllabus to extract relevant information. Simplifies the .pdf file to contain relevant information."""
+def parse_s(file):
+    """Parses the syllabus to extract relevant information. Simplifies the .pdf file to contain relevant
+    information. Helper function for the GUI function. Takes a string file path as its sole input, and returns
+    a string with the simplified information."""
 
 # -------------------------------------------------------------------------------------------------
 # GUI Function Definitions:
 
-def importFile():
+def import_file():
     """Takes no inputs and returns nothing. Imports the file to be parsed using a helper function."""
-    global rootWin
-    importF()
+    global root_win
+    import_f()
 
-def parseSyllabus():
+def parse_syllabus():
     """Takes no inputs and returns nothing. Parses the previously imported syllabus using a helper function."""
-    global rootWin
-    parseS()
-    parsedText.set("ass")
+    global root_win
+    parse_s()
+    parsed_text.set("ass")
 
 def quit():
     """Takes no inputs and returns nothing. Upon being called, destroys the GUI."""
-    global rootWin
-    rootWin.destroy()
+    global root_win
+    root_win.destroy()
 
 # -------------------------------------------------------------------------------------------------
 # GUI Main Function Call:
