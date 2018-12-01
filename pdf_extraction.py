@@ -7,7 +7,6 @@
 '''
 
 import PyPDF2
-import csv
 import pandas as pd
 import re
 import spacy
@@ -18,28 +17,20 @@ nlp = spacy.load('en')
 
 pdf_file_reader = PyPDF2.PdfFileReader
 
-file_path = "/Users/davidmpeletz/Desktop/islam.pdf"
+file_path = "/Users/davidmpeletz/Documents/Github/Comprehensyllabi/sample_syllabus.pdf"
 
-input1 = pdf_file_reader(file_path)
+pdf_input = pdf_file_reader(file_path)
 
 def get_all_content(input_pdf):
     if input_pdf.getNumPages() > 0:
 
-        text_content = []
-        str_content = ""
-        stop_words = set(stopwords.words('english'))
+        pdf_as_string = ""
 
         for i in range(input_pdf.getNumPages()):
-            sentences = sent_tokenize(input_pdf.getPage(i).extractText())
-            str_content += "".join(sentences)
-            line_list = input_pdf.getPage(i).extractText().split('\n')
-            words = re.split(r'\W+', input_pdf.getPage(i).extractText())
-            new_str_content = [w for w in words if not w in stop_words]
-            text_content.extend(words)
-            doc = nlp(str_content)
-        #             print(str_content)
+            lines = sent_tokenize(input_pdf.getPage(i).extractText())
+            pdf_as_string += "".join(lines)
 
-        return str_content
+        return pdf_as_string
 
     else:
         raise Exception("The syllabus PDF must contain at least 1 page.")
@@ -63,14 +54,14 @@ def contains_grading_info(line):
 
     return 0
 
-
 def contains_email(line):
     line = str(line).lower()
     email_match = re.findall(r'[\w\.-]+@[\w\.-]+', line)
+
     if len(email_match) > 0:
         return 1
-    return 0
 
+    return 0
 
 def contains_useful_info(line):
     useful_info = ["quiz", "test", "exam", "final", "assessment", "due",
@@ -87,77 +78,60 @@ def contains_useful_info(line):
 
     return 0
 
-
 def contains_important_date(line):
     line = str(line).lower()
     doc = nlp(line)
 
     for ent in doc.ents:
+
         if ('DATE' in ent.label_ or
-                'CARDINAL' in ent.label_ or
-                'TIME' in ent.label_):
+            'CARDINAL' in ent.label_ or
+            'TIME' in ent.label_):
             return 1
+
     return 0
-
-
-
-
-
 
 def get_grading_policy(input_df):
     grading_df = input_df.loc[input_df['has_grading_info'] == 1]
 
-    f_index = grading_df.head(1).index[0]
-    l_index = grading_df.tail(1).index[0]
+    first = grading_df.head(1).index[0]
+    last = grading_df.tail(1).index[0]
 
     num_categories = len(grading_df)
     percentages = []
-    descriptions = []
+    assignments = []
 
-    string = ""
-    for i in range(f_index, l_index + 2):
-        string += line_df['line'][i]
+    section_string = ""
+    for i in range(first, last + 2):
+        section_string += input_df['line'][i]
 
-    values = string.split('%', num_categories)
+    percentage_list = section_string.split('%', num_categories)
 
     for j in range(num_categories):
-        percent_value = values[j][-2:] + "%"
+        percent_value = percentage_list[j][-2:] + "%"
+
         if j != num_categories - 1:
-            description = values[j + 1][:-3]
+            description = percentage_list[j + 1][:-3]
+
         else:
-            description = values[j + 1]
+            description = percentage_list[j + 1]
 
         percentages.append(percent_value)
-        descriptions.append(description)
+        assignments.append(description)
 
-        # return_df = pd.DataFrame()
-        # return_df['Percentage'] = percentages
-        # return_df['Assignment'] = descriptions
-
-    return [descriptions, percentages]
-
+    return [assignments, percentages]
 
 def get_email(input_df):
-    email_frame = input_df.loc[input_df['has_email'] == 1]
-    index = (email_frame.head(1).index[0])
 
-    for i in (email_frame['line'][index].split()):
+    email_df = input_df.loc[input_df['has_email'] == 1]
+    first = (email_df.head(1).index[0])
+
+    for i in (email_df['line'][first].split()):
+
         email_match = re.findall(r'[\w\.-]+@[\w\.-]+', i)
+
         if len(email_match) > 0:
             return email_match[0]
-
-
-return_bow = get_all_content(input1)
-
-line_df = pd.DataFrame()
-line_df['line'] = return_bow.split('\n')
-
-line_df['has_useful_info'] = line_df['line'].apply(contains_useful_info)
-line_df['has_email'] = line_df['line'].apply(contains_email)
-line_df['has_grading_info'] = line_df['line'].apply(contains_grading_info)
-line_df['has_date'] = line_df['line'].apply(contains_important_date)
-line_df['has_office_hours'] = line_df['line'].apply(contains_office_hours)
-
 
 def get_office_hours(input_df):
     office_hour_df = input_df.loc[input_df['has_office_hours'] == 1]
@@ -180,8 +154,19 @@ def format_return_df(input_df) :
     return_df['Percentage'] = get_grading_policy(input_df)[1]
     return_df['Office Hours'][0] = office_hours
     return_df['Email'][0] = email
-    return return_df.to_csv('Summary')
+    return_df.reset_index()
+    return return_df.to_csv('syllabus_summary.csv', index=False)
 
+def get_useful_information(input_pdf):
 
-print(format_return_df(line_df))
+    return_df = pd.DataFrame()
+    return_df['line'] = get_all_content(input_pdf).split('\n')
+    return_df['has_useful_info'] = return_df['line'].apply(contains_useful_info)
+    return_df['has_email'] = return_df['line'].apply(contains_email)
+    return_df['has_grading_info'] = return_df['line'].apply(contains_grading_info)
+    return_df['has_date'] = return_df['line'].apply(contains_important_date)
+    return_df['has_office_hours'] = return_df['line'].apply(contains_office_hours)
 
+    return format_return_df(return_df)
+
+get_useful_information(pdf_input)
