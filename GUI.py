@@ -11,7 +11,8 @@
 from tkinter import *
 import tkinter.messagebox as mBox
 import easygui
-import pdf_extraction
+from PIL import ImageTk,Image
+#import pdf_extraction
 
 # -------------------------------------------------------------------------------------------------
 # Global Variables:
@@ -31,45 +32,28 @@ def GUIMain():
 
     root_win = Tk()
     root_win.title("Syllabus Information Parser")
-    root_win.configure(bg="#CDC9C9")
+    root_win.configure(bg="#7AC5CD")
 
-    parsed_text = StringVar()
 
-    titleLabel = Label(root_win, text="Syllabus Simplifier", bg="#CDC9C9", fg="gray1", padx=40, pady=5,
+    titleLabel = Label(root_win, text="Syllabus Simplifier", bg="#7AC5CD", fg="gray1", padx=40, pady=5,
                        font="Verdana 18 bold")
     titleLabel.grid(row=0, column=0)
 
-    label1 = Label(root_win, text="Import your Syllabus:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
+    label1 = Label(root_win, text="Import and parse\nyour syllabus:", bg="#7AC5CD", fg="gray1", padx=5, pady=5,
                    font="Verdana 12 bold italic")
     label1.grid(row=1, column=0)
 
-    label2 = Label(root_win, text="Parse your Syllabus:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
+    label3 = Label(root_win, text="", bg="#7AC5CD", fg="#7AC5CD", padx=5, pady=0,
                    font="Verdana 12 bold italic")
-    label2.grid(row=3, column=0)
+    label3.grid(row=3, column=0)
 
-    label3 = Label(root_win, text="Parsed Text:", bg="#CDC9C9", fg="gray1", padx=5, pady=5,
-                   font="Verdana 12 bold italic")
-    label3.grid(row=5, column=0)
-
-    import_button = Button(root_win, text="Import", width=7, bg="#F5F5F5", fg="black", activeforeground="#2F4F4F", bd=3,
+    import_button = Button(root_win, text="Import", width=7, bg="#EEE8CD", fg="black", activeforeground="#2F4F4F", bd=3,
                           font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=import_file)
     import_button.grid(row=2, column=0)
 
-    parse_button = Button(root_win, text="Parse", width=7, bg="#F5F5F5", fg="black", activeforeground="#2F4F4F", bd=3,
-                         font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=parse_syllabus)
-    parse_button.grid(row=4, column=0)
-
-    quit_button = Button(root_win, text="Quit", width=7, bg="#F5F5F5", fg="#CD0000", activeforeground="#FF0000", bd=3,
+    quit_button = Button(root_win, text="Quit", width=7, bg="#EEE8CD", fg="#CD0000", activeforeground="#FF0000", bd=3,
                         font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=quit)
-    quit_button.grid(row=8, column=0)
-
-    txt_entry = Entry(root_win, textvariable=parsed_text, bg="#efefef", fg="black", bd=5, font="Verdana 12",
-                     justify=CENTER, relief=SUNKEN, width=20)
-    txt_entry.grid(row=6, column=0)
-
-    label4 = Label(root_win, text="", bg="#CDC9C9", fg="gray1", padx=5, pady=0,
-                   font="Verdana 12 bold italic")
-    label4.grid(row=7, column=0)
+    quit_button.grid(row=4, column=0)
 
     root_win.mainloop()
 
@@ -84,8 +68,8 @@ def import_f():
 
 def parse_s(file):
     """Parses the syllabus to extract relevant information. Simplifies the .pdf file to contain relevant
-    information. Helper function for the GUI function. Takes a string file path as its sole input, and returns
-    a string with the simplified information."""
+    information. Helper function for the GUI function. Takes a string file path as its sole input, returning
+    a .csv file."""
 
 # -------------------------------------------------------------------------------------------------
 # GUI Function Definitions:
@@ -93,13 +77,7 @@ def parse_s(file):
 def import_file():
     """Takes no inputs and returns nothing. Imports the file to be parsed using a helper function."""
     global root_win
-    import_f()
-
-def parse_syllabus():
-    """Takes no inputs and returns nothing. Parses the previously imported syllabus using a helper function."""
-    global root_win
-    parse_s()
-    parsed_text.set("ass")
+    parse_s(import_f())
 
 def quit():
     """Takes no inputs and returns nothing. Upon being called, destroys the GUI."""
