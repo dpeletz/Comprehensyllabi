@@ -16,10 +16,6 @@ nlp = spacy.load('en')
 
 pdf_file_reader = PyPDF2.PdfFileReader
 
-file_path = "/Users/davidmpeletz/Documents/Github/Comprehensyllabi/sample_syllabus.pdf"
-
-pdf_input = pdf_file_reader(file_path)
-
 def get_all_content(input_pdf):
     if input_pdf.getNumPages() > 0:
 
@@ -156,9 +152,11 @@ def format_return_df(input_df) :
     return_df.reset_index()
     return return_df.to_csv('syllabus_summary.csv', index=False)
 
-def get_useful_information(input_pdf):
+def get_useful_information(file_path):
 
+    input_pdf = pdf_file_reader(file_path)
     return_df = pd.DataFrame()
+
     return_df['line'] = get_all_content(input_pdf).split('\n')
     return_df['has_useful_info'] = return_df['line'].apply(contains_useful_info)
     return_df['has_email'] = return_df['line'].apply(contains_email)
@@ -168,4 +166,3 @@ def get_useful_information(input_pdf):
 
     return format_return_df(return_df)
 
-get_useful_information(pdf_input)

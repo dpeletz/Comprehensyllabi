@@ -9,10 +9,8 @@
 # Import Statements:
 
 from tkinter import *
-import tkinter.messagebox as mBox
 import easygui
-from PIL import ImageTk,Image
-#import pdf_extraction
+import pdf_extraction
 
 # -------------------------------------------------------------------------------------------------
 # Global Variables:
@@ -28,14 +26,13 @@ def GUIMain():
     elements of it. Has no parameters and returns nothing."""
 
     global root_win
-    global parsed_text
 
     root_win = Tk()
-    root_win.title("Syllabus Information Parser")
+    root_win.title("Comprehensyllabi")
     root_win.configure(bg="#7AC5CD")
 
 
-    titleLabel = Label(root_win, text="Syllabus Simplifier", bg="#7AC5CD", fg="gray1", padx=40, pady=5,
+    titleLabel = Label(root_win, text="Comprehensyllabi", bg="#7AC5CD", fg="gray1", padx=40, pady=5,
                        font="Verdana 18 bold")
     titleLabel.grid(row=0, column=0)
 
@@ -43,9 +40,9 @@ def GUIMain():
                    font="Verdana 12 bold italic")
     label1.grid(row=1, column=0)
 
-    label3 = Label(root_win, text="", bg="#7AC5CD", fg="#7AC5CD", padx=5, pady=0,
+    label2 = Label(root_win, text="", bg="#7AC5CD", fg="#7AC5CD", padx=5, pady=0,
                    font="Verdana 12 bold italic")
-    label3.grid(row=3, column=0)
+    label2.grid(row=3, column=0)
 
     import_button = Button(root_win, text="Import", width=7, bg="#EEE8CD", fg="black", activeforeground="#2F4F4F", bd=3,
                           font="Verdana 12 bold", relief=RIDGE, overrelief=SUNKEN, command=import_file)
@@ -70,6 +67,9 @@ def parse_s(file):
     """Parses the syllabus to extract relevant information. Simplifies the .pdf file to contain relevant
     information. Helper function for the GUI function. Takes a string file path as its sole input, returning
     a .csv file."""
+    pdf_extraction.get_useful_information(file)
+
+
 
 # -------------------------------------------------------------------------------------------------
 # GUI Function Definitions:
