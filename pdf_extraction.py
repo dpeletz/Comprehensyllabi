@@ -1,4 +1,13 @@
+'''
+    File name: pdf_extraction.py
+    Authors: David Peletz and Jack Freier
+    Date created: 12/01/2018
+    Date last modified: 12/01/2018
+    Python Version: 3.5
+'''
+
 import PyPDF2
+import csv
 import pandas as pd
 import re
 import spacy
@@ -121,11 +130,11 @@ def get_grading_policy(input_df):
         percentages.append(percent_value)
         descriptions.append(description)
 
-        return_df = pd.DataFrame()
-        return_df['percentage'] = percentages
-        return_df['description'] = descriptions
+        # return_df = pd.DataFrame()
+        # return_df['Percentage'] = percentages
+        # return_df['Assignment'] = descriptions
 
-    return return_df
+    return [descriptions, percentages]
 
 
 def get_email(input_df):
@@ -163,7 +172,16 @@ def get_office_hours(input_df):
 
     return split_string
 
+def format_return_df(input_df) :
+    office_hours = get_office_hours(input_df)
+    email = get_email(input_df)
+    return_df = pd.DataFrame(columns=('Assignment', 'Percentage', 'Email', 'Office Hours'))
+    return_df['Assignment'] = get_grading_policy(input_df)[0]
+    return_df['Percentage'] = get_grading_policy(input_df)[1]
+    return_df['Office Hours'][0] = office_hours
+    return_df['Email'][0] = email
+    return return_df.to_csv('Summary')
 
-print(get_office_hours(line_df))
-print(get_email(line_df))
-print(get_grading_policy(line_df))
+
+print(format_return_df(line_df))
+
