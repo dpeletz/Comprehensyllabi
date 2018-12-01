@@ -11,6 +11,7 @@
 from tkinter import *
 import tkinter.messagebox as mBox
 import easygui
+import pdf_extraction
 
 # -------------------------------------------------------------------------------------------------
 # Global Variables:
@@ -77,13 +78,11 @@ def GUIMain():
 
 def importF():
     """Imports a .pdf file from the user's device."""
-    filePath = easygui.fileopenbox()
+    filePath = easygui.fileopenbox(filetypes=['*.pdf'])
     return filePath
-
 
 def parseS():
     """Parses the syllabus to extract relevant information. Simplifies the .pdf file to contain relevant information."""
-
 
 # -------------------------------------------------------------------------------------------------
 # GUI Function Definitions:
