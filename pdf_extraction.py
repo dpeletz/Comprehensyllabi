@@ -11,7 +11,6 @@ import pandas as pd
 import re
 import spacy
 from nltk import sent_tokenize
-from nltk.corpus import stopwords
 
 nlp = spacy.load('en')
 
